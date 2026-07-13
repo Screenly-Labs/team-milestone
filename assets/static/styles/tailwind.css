@@ -14,19 +14,26 @@
 @theme {
   --color-ink: #0d1326;
   --color-ink-deep: #070b18;
-  --color-burst: #23315e;
+  --color-burst: #2b3d78;
   --color-paper: #f4f6fb;
   --color-paper-dim: #aeb8d0;
   --color-gold: #f6c453;
   --color-gold-deep: #d8a637;
   --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+}
 
-  /* Confetti palette, indexed by --hue (0..3) from buildConfetti(). */
+/* Confetti palette, referenced only from JS-set inline styles (var(--confetti-N)).
+   Kept OUT of @theme on purpose: Tailwind v4 tree-shakes theme vars it can't see
+   used in the stylesheet, which would drop every colour but the fallback and make
+   the whole shower one colour. As a plain :root block these are always emitted.
+   A gold-and-white palette (no party brights) for a premium ticker-tape — this is
+   what sets the milestone shower apart from the Birthday app's confetti. */
+:root {
   --confetti-0: #f6c453;
   --confetti-1: #f4f6fb;
-  --confetti-2: #6ad3c9;
-  --confetti-3: #7aa2ff;
+  --confetti-2: #ffe4a3;
+  --confetti-3: #d8a637;
 }
 
 /* Webfonts: self-hosted, vendored from Bun-managed @fontsource (sync-fonts.js).
@@ -110,6 +117,8 @@
     letter-spacing: -0.02em;
     text-wrap: balance;
     color: var(--color-paper);
+    /* A faint warm halo so the numeral reads as lit by the burst behind it. */
+    text-shadow: 0 0 0.12em color-mix(in srgb, var(--color-gold) 22%, transparent);
   }
 
   .card__label {
@@ -185,31 +194,46 @@
     overflow: hidden;
   }
 
+  /* Ticker-tape streamers: narrow and long, unlike the Birthday app's squarer
+     confetti. Colour comes from a per-scrap palette reference set in main.ts. */
   .confetti__bit {
     position: absolute;
-    top: -6vh;
+    top: -8vh;
     left: var(--left);
-    width: calc(0.7rem * var(--size));
-    height: calc(1.1rem * var(--size));
-    /* Colour comes from a per-scrap palette reference set in main.ts. */
+    width: calc(0.4rem * var(--size));
+    height: calc(1.6rem * var(--size));
     background-color: var(--bit-color, var(--confetti-0));
     border-radius: 1px;
-    opacity: 0.9;
+    opacity: 0.92;
     will-change: transform;
   }
 
+  /* A few round sequins among the streamers. */
   .confetti__bit--round {
     border-radius: 50%;
-    height: calc(0.7rem * var(--size));
+    width: calc(0.55rem * var(--size));
+    height: calc(0.55rem * var(--size));
+  }
+
+  /* Reduced motion: hold the shower still as a scatter. Lives in @layer
+     components (not base) so it can override the animated .confetti__bit above —
+     the components layer wins over base regardless of specificity. */
+  @media (prefers-reduced-motion: reduce) {
+    .confetti__bit {
+      top: var(--top);
+      transform: translateX(var(--drift)) rotate(var(--rotate));
+    }
   }
 }
 
 @layer base {
   @media (prefers-reduced-motion: no-preference) {
     /* The confetti shower: each scrap falls the full height with a little
-       horizontal drift and spin, offset by its own delay, looping forever. */
+       horizontal drift and spin. The delay is applied *negative* so every piece
+       starts mid-fall — the shower fills the whole frame from the first paint
+       instead of clustering at the top edge. */
     .confetti__bit {
-      animation: confetti-fall var(--duration) linear var(--delay) infinite;
+      animation: confetti-fall var(--duration) linear calc(var(--delay) * -1) infinite;
     }
 
     /* One orchestrated entrance, top to bottom. */
@@ -227,14 +251,6 @@
     }
     .card__date {
       animation: rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 460ms both;
-    }
-  }
-
-  /* With reduced motion, the confetti would otherwise sit frozen above the fold;
-     hide it and let the milestone stand on its own. */
-  @media (prefers-reduced-motion: reduce) {
-    .confetti {
-      display: none;
     }
   }
 

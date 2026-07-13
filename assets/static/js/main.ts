@@ -10,9 +10,9 @@ import { buildConfetti, type ConfettiPiece, parseConfig } from './milestone'
 const EXAMPLE =
   'team=Team+Phoenix&value=5+Years&label=of+building+together&message=Thank+you+for+every+late+night,+every+launch,+and+every+win.&date=July+2026'
 
-// How many scraps of confetti to scatter. Static count — plenty for a festive
-// screen without overwhelming a low-powered signage player.
-const CONFETTI_COUNT = 60
+// How many scraps of confetti to scatter. Fewer, larger streamers than the
+// Birthday app — a restrained gold ticker-tape rather than a dense party shower.
+const CONFETTI_COUNT = 40
 
 const text = (id: string, value: string): void => {
   const el = document.getElementById(id)
@@ -54,6 +54,7 @@ const scatterConfetti = (): void => {
     const el = document.createElement('span')
     el.className = piece.round ? 'confetti__bit confetti__bit--round' : 'confetti__bit'
     el.style.setProperty('--left', `${piece.left * 100}%`)
+    el.style.setProperty('--top', `${piece.top * 100}%`)
     el.style.setProperty('--delay', `${piece.delay}s`)
     el.style.setProperty('--duration', `${piece.duration}s`)
     el.style.setProperty('--drift', `${piece.drift * 12}vw`)

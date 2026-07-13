@@ -67,7 +67,14 @@ above it, and confetti falls quietly behind. One fluid root font-size
 (`clamp(vw + vh)`) drives the whole scale and is orientation-neutral; children
 size in `rem`, so it works from the 800×480 Pi display to 4K, portrait and
 landscape, with no breakpoints. The confetti fall and the entrance are gated
-behind `prefers-reduced-motion` (reduced → confetti hidden, value stills).
+behind `prefers-reduced-motion`; when reduced, the confetti holds still as a
+full-frame scatter (kept, not hidden — it's the signature) and the entrance is
+disabled. The confetti is a restrained gold-and-white ticker-tape (distinct from
+the Birthday app's multicolour party confetti). Its palette lives in a plain
+`:root{}` block, **not** `@theme`: Tailwind v4 tree-shakes theme vars it can't see
+referenced in the CSS, and the colours are only referenced from JS-set inline
+styles, so in `@theme` all but the fallback would be dropped and the shower would
+render one colour.
 
 ## Quality bars
 
