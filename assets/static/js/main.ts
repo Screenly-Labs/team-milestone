@@ -5,6 +5,7 @@
 // Side-effect import: installs the replaceChildren shim for the older-browser
 // degraded mode. Must stay first so the shim is in place before any render.
 import '@screenly-labs/signage-kit/polyfills'
+import { removeScreenlyBranding } from '@screenly-labs/signage-kit/branding'
 
 import { buildConfetti, type ConfettiPiece, parseConfig } from './milestone'
 
@@ -69,15 +70,6 @@ const scatterConfetti = (): void => {
     return el
   })
   field.replaceChildren(...nodes)
-}
-
-// On a Screenly player the viewer is already a Screenly customer, so the
-// promotional Screenly badge is removed. The 'screenly-viewer' token in the user
-// agent marks these devices; every other browser keeps the badge.
-const removeScreenlyBranding = (): void => {
-  if (navigator.userAgent.includes('screenly-viewer')) {
-    document.querySelector('.brand')?.remove()
-  }
 }
 
 const init = (): void => {
