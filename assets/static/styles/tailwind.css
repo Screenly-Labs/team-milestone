@@ -282,8 +282,8 @@
 }
 
 /* =========================================================================
-   Degraded mode — old/weak signage players (html.legacy set by the inline gate
-   in index.html). Treated like prefers-reduced-motion but stronger: assume the
+   Degraded mode — old/weak signage players (html.legacy set by the degraded-mode
+   gate the build injects). Treated like prefers-reduced-motion but stronger: assume the
    device can't afford animation at all. Content stays fully legible; the entrance
    just appears and the confetti holds as a static scatter instead of falling.
    ========================================================================= */
