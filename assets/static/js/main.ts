@@ -5,7 +5,9 @@
 // Side-effect import: installs the replaceChildren shim for the older-browser
 // degraded mode. Must stay first so the shim is in place before any render.
 import '@screenly-labs/signage-kit/polyfills'
+import { trackPlayer } from '@screenly-labs/signage-kit/analytics'
 import { removeScreenlyBranding } from '@screenly-labs/signage-kit/branding'
+import { detectPlayer } from '@screenly-labs/signage-kit/profiler'
 
 import { buildConfetti, type ConfettiPiece, parseConfig } from './milestone'
 
@@ -74,6 +76,13 @@ const scatterConfetti = (): void => {
 
 const init = (): void => {
   removeScreenlyBranding()
+  // Report which player is showing this, and whether the screen was actually set up.
+  // An empty query string means it is still showing the built-in EXAMPLE, which is the
+  // difference between a deployed screen and one nobody has configured yet.
+  trackPlayer(detectPlayer(), {
+    app: 'team-milestone',
+    config: { configured: window.location.search ? 1 : 0 }
+  })
   render(new URLSearchParams(window.location.search || `?${EXAMPLE}`))
 }
 
