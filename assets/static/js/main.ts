@@ -81,6 +81,7 @@ const init = (): void => {
   // difference between a deployed screen and one nobody has configured yet.
   trackPlayer(detectPlayer(), {
     app: 'team-milestone',
+    sendPageView: true,
     config: { configured: window.location.search ? 1 : 0 }
   })
   render(new URLSearchParams(window.location.search || `?${EXAMPLE}`))
